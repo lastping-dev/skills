@@ -3,7 +3,9 @@
 1. Ask: "May I add LastPing to your Claude Code MCP configuration (user scope)?"
    Wait for a yes.
 2. Run `claude mcp list`.
-   - `lastping` is listed and Connected: go back to Step 1 of the skill.
+   - `lastping` is listed and Connected: if `list_monitors` is available in this
+     session, go back to Step 1 of the skill. If it is not, tell the user to restart
+     with `claude --continue` so the tools load, then say continue.
    - `lastping` is listed but was added with an API key (the user says so, or it
      shows an Authorization header): ask, then run
      `claude mcp remove lastping --scope user`.

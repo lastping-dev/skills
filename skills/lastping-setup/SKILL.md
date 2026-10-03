@@ -85,7 +85,7 @@ runs it uses. Never fill in UTC because you do not know. GitHub Actions and
 Kubernetes CronJob schedules run in UTC: send no `tz` for them. A workflow with no
 schedule (push or manual triggers only) gets no `schedule_cron`.
 
-If you find nothing, say so and go to Step 6.
+If you find nothing, say so and go to Step 6 (then Step 7).
 
 ## Step 4: Propose, then ask
 
@@ -133,12 +133,14 @@ Call `list_destinations`. If there are none, offer one:
 - Slack, Discord, Microsoft Teams, Google Chat or a webhook: these carry a secret
   URL, so send the user to https://app.lastping.dev to add them there. Do not ask
   for the URL.
-Then route alerts to it as `set_route` describes, after reading the monitor with
-`get_monitor` (routes replace the whole set).
+Ask which of the monitors created in this session should alert this destination,
+then call `set_route` for those, after reading each with `get_monitor` (routes
+replace the whole set). Never change routes on monitors you did not create in this
+session.
 
 ## Step 8: Check and summarise
 
-If a job can be run now, or the user agrees to one test success ping from
-`get_ping_instructions`, send it and confirm with `get_monitor` that the ping
-arrived. Then summarise: what is monitored, what still needs merging or deploying,
+If a job can be run now and the user agrees, run it; or, with the user's agreement,
+send one test success ping from `get_ping_instructions`. Confirm with `get_monitor`
+that the ping arrived. Then summarise: what is monitored, what still needs merging or deploying,
 where alerts go, and the console: https://app.lastping.dev

@@ -6,7 +6,8 @@
    {"mcpServers": {"lastping": {"httpUrl": "https://mcp.lastping.dev/mcp"}}}
 
    Use `httpUrl`, not `url`: Gemini CLI reads `url` as SSE, which LastPing does not
-   speak. Show the user the diff before writing.
+   speak. Show the user only the lastping block you are adding, never the rest of
+   the file: it can hold other servers' secrets. Never print other entries.
 3. Tell the user: "Restart Gemini CLI, run /mcp auth lastping and sign in to
    LastPing in the browser that opens. /mcp then lists lastping. Then ask me again:
    Monitor this project with LastPing."

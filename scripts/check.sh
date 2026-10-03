@@ -48,7 +48,7 @@ done
 echo "=== leak grep ==="
 # Words that would reveal private repositories or tooling. This file is
 # excluded: it has to spell them.
-pattern='monorepo|\bpulse\b|superpowers|docs/superpowers|tp322d/lastping\b[^-]|(^|[^&a-zA-Z0-9])#[0-9]{2,}\b'
+pattern='monorepo|\bpulse\b|superpowers|docs/superpowers|/Users/|tedomac|tp322d/lastping($|[^-])|(^|[^&a-zA-Z0-9])#[0-9]{2,}\b'
 hits="$(cd "$ROOT" && git ls-files -co --exclude-standard | grep -v '^scripts/check.sh$' | xargs grep -nIiE "$pattern" 2>/dev/null || true)"
 if [ -z "$hits" ]; then ok "no private references in tracked files"; else fail "private references found:"; echo "$hits"; fi
 
@@ -57,6 +57,11 @@ if git -C "$ROOT" rev-parse --verify -q HEAD >/dev/null; then
     fail "a commit message carries an attribution trailer"
   else
     ok "no attribution trailers in commit messages"
+  fi
+  if git -C "$ROOT" log --format=%B | grep -qiE "$pattern"; then
+    fail "a commit message contains a private reference"
+  else
+    ok "no private references in commit messages"
   fi
 fi
 
