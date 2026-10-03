@@ -48,7 +48,8 @@ If you have LastPing tools, call `list_monitors`.
 - It answers: LastPing is connected. Go to Step 3. Do not add the server again.
 - It fails with an authentication error: the server is added but not signed in.
   Do only the sign-in part of your client's reference in Step 2.
-- You have no LastPing tools: go to Step 2.
+- You have no LastPing tools: go to Step 2. Do not scan or propose anything until
+  LastPing is connected; the later steps need its tools.
 
 ## Step 2: Connect
 
@@ -86,6 +87,9 @@ Then look in the project for:
 - `.github/workflows/*.yml` and `*.yaml` with `on.schedule` cron entries (`github-actions`)
 - Kubernetes manifests or Helm templates with `kind: CronJob` (`k8s-cronjob`)
 - systemd `*.timer` units with `OnCalendar=` (`systemd-timer`)
+
+`.github` is a hidden directory, and search tools such as `rg` and some globs skip
+hidden directories by default. List `.github/workflows/` explicitly.
 
 A repository has no host to read a timezone from. For every `crontab` or
 `systemd-timer` entry with a schedule, ask the user which timezone the machine that
