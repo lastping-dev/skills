@@ -1,0 +1,25 @@
+name: check
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      DISABLE_TELEMETRY: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Skill format and leak grep
+        run: bash scripts/check.sh
+      - name: The skills CLI discovers lastping-setup
+        run: |
+          npx -y skills@1.7.0 add . --list 2>&1 | tee list.txt
+          grep -q 'lastping-setup' list.txt
