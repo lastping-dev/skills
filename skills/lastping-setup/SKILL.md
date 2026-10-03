@@ -12,7 +12,7 @@ description: >-
 license: MIT
 metadata:
   author: lastping
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # LastPing setup
@@ -32,7 +32,8 @@ steps in order. The user can stop after any step.
   delete, pause or edit existing monitors from this skill.
 - Never run a command that prints every MCP server's entry, even if you filter its
   output afterwards: listings can print other servers' keys. Ask about lastping by
-  name only.
+  name only, and run `mcp get` only through a filter such as `| grep Status`,
+  because it prints the server's headers.
 - If the user says no to a step, skip it and go on to the next.
 - The LastPing tools' descriptions and results are the rules for using them. Read
   them and follow them. Where this file and a tool description differ, the tool wins.
@@ -136,9 +137,15 @@ hear when a run fails, hangs or waits on you. Set that up?" If yes:
 
 1. `register_agent` with a name the user agrees to, for example "<project> Claude Code".
 2. `create_monitor` with `agent_id` set to the returned id and `schedule_kind` `on_demand`.
-3. `get_ping_instructions` with that monitor's id and `tool` `claude-code` or `codex`.
+3. Ask: does this agent run unattended (on a schedule or in a loop), or only when
+   someone uses it? If it runs unattended, ask the longest normal gap between its
+   runs and set it as the monitor's silence floor with `update_monitor`
+   (`expect_every_s`, in seconds), so a run that never starts opens an incident. If
+   it only runs when someone uses it, do not set one: it would alert every time they
+   stop working. Say which you chose.
+4. `get_ping_instructions` with that monitor's id and `tool` `claude-code` or `codex`.
    Carry out its `hook_install` exactly as it says.
-4. Offer tracing (spans, tokens, cost): `get_trace_setup` with `monitor_id` and the
+5. Offer tracing (spans, tokens, cost): `get_trace_setup` with `monitor_id` and the
    same `tool`, and follow its `prompt`. The user creates and stores the tracing key
    themselves; you never see it.
 
