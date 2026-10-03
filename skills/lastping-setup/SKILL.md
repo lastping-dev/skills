@@ -73,7 +73,13 @@ When they come back, start again at Step 1.
 
 Read the description of `discover_monitors_reconcile` first. It defines the entry
 shape (`source_kind`, `source_ref`, `name`, `schedule_cron`, `tz`), how to keep
-`source_ref` stable, and the timezone rules. Then look in the project for:
+`source_ref` stable, and the timezone rules.
+
+First call `list_monitors`. Monitors from earlier scans carry `source_kind` and
+`source_ref`: when you find the same job again, reuse exactly that `source_ref`, so
+the scan matches the existing monitor instead of creating a duplicate.
+
+Then look in the project for:
 
 - crontab lines: files named `crontab` or `*.cron`, cron.d-style files, and crontab
   entries written by Dockerfiles or provisioning scripts (`source_kind` `crontab`)
@@ -95,6 +101,9 @@ Show a table with one row per job: name, kind, schedule, timezone, file. Ask:
 "Create a LastPing monitor for each of these?" Let the user drop rows. Propose every job you found; you may suggest dropping one,
 but only the user removes a row. After a yes,
 call `discover_monitors_reconcile` once, with the whole agreed list.
+Running it again is safe and is how you check what is already monitored: it matches
+on `source_kind` and `source_ref`, leaves existing monitors untouched, and creates
+only jobs that are new.
 
 Report the result in three parts:
 - Created: the new monitors.
