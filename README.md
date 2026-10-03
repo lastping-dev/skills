@@ -13,9 +13,10 @@ Then ask your coding agent: **Monitor this project with LastPing**
 
 ## lastping-setup
 
-- Connects LastPing's MCP server (https://mcp.lastping.dev/mcp). Claude Code, Codex,
-  Antigravity CLI and VS Code are connected for you; any other assistant is walked through
-  https://lastping.dev/mcp/. You sign in once, in your browser.
+- Connects LastPing's MCP server (https://mcp.lastping.dev/mcp). In Claude Code, Codex,
+  Antigravity CLI and VS Code the skill connects LastPing with you; any other
+  assistant is walked through https://lastping.dev/mcp/. You sign in once, in your
+  browser.
 - Finds the scheduled jobs in the project (crontab, GitHub Actions schedules,
   Kubernetes CronJobs, systemd timers), shows you the list, and creates monitors only
   after you agree.
