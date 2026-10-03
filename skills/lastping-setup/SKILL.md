@@ -30,6 +30,8 @@ steps in order. The user can stop after any step.
   the change first.
 - Create monitors only after the user says yes to the list you showed them. Never
   delete, pause or edit existing monitors from this skill.
+- Never list every MCP server: listings can print other servers' keys. Ask about
+  lastping by name only.
 - If the user says no to a step, skip it and go on to the next.
 - The LastPing tools' descriptions and results are the rules for using them. Read
   them and follow them. Where this file and a tool description differ, the tool wins.
@@ -57,7 +59,7 @@ You know which client you are running in. If you are not sure, ask the user.
 
 - Claude Code: read `references/claude-code.md`
 - Codex: read `references/codex.md`
-- Gemini CLI: read `references/gemini-cli.md`
+- Antigravity CLI (`agy`, which replaced Gemini CLI): read `references/antigravity.md`
 - VS Code (GitHub Copilot agent mode): read `references/vs-code.md`
 - Any other client: read `references/other-clients.md`
 
@@ -90,7 +92,8 @@ If you find nothing, say so and go to Step 6 (then Step 7).
 ## Step 4: Propose, then ask
 
 Show a table with one row per job: name, kind, schedule, timezone, file. Ask:
-"Create a LastPing monitor for each of these?" Let the user drop rows. After a yes,
+"Create a LastPing monitor for each of these?" Let the user drop rows. Propose every job you found; you may suggest dropping one,
+but only the user removes a row. After a yes,
 call `discover_monitors_reconcile` once, with the whole agreed list.
 
 Report the result in three parts:
