@@ -12,7 +12,7 @@ description: >-
 license: MIT
 metadata:
   author: lastping
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # LastPing setup
