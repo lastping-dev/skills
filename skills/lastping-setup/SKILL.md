@@ -30,8 +30,9 @@ steps in order. The user can stop after any step.
   the change first.
 - Create monitors only after the user says yes to the list you showed them. Never
   delete, pause or edit existing monitors from this skill.
-- Never list every MCP server: listings can print other servers' keys. Ask about
-  lastping by name only.
+- Never run a command that prints every MCP server's entry, even if you filter its
+  output afterwards: listings can print other servers' keys. Ask about lastping by
+  name only.
 - If the user says no to a step, skip it and go on to the next.
 - The LastPing tools' descriptions and results are the rules for using them. Read
   them and follow them. Where this file and a tool description differ, the tool wins.
@@ -102,12 +103,12 @@ If you find nothing, say so and go to Step 6 (then Step 7).
 ## Step 4: Propose, then ask
 
 Show a table with one row per job: name, kind, schedule, timezone, file. Ask:
-"Create a LastPing monitor for each of these?" Let the user drop rows. Propose every job you found; you may suggest dropping one,
-but only the user removes a row. After a yes,
-call `discover_monitors_reconcile` once, with the whole agreed list.
-Running it again is safe and is how you check what is already monitored: it matches
-on `source_kind` and `source_ref`, leaves existing monitors untouched, and creates
-only jobs that are new.
+"Create a LastPing monitor for each of these?" Let the user drop rows. Propose every
+job you found; you may suggest dropping one, but only the user removes a row. After
+a yes, call `discover_monitors_reconcile` once, with the whole agreed list.
+After the user's yes, running it again on a later scan is safe: it matches on
+`source_kind` and `source_ref`, leaves existing monitors untouched, and creates
+only jobs that are new. It creates monitors, so it is never a read-only check.
 
 Report the result in three parts:
 - Created: the new monitors.
