@@ -12,7 +12,7 @@ description: >-
 license: MIT
 metadata:
   author: lastping
-  version: "0.1.2"
+  version: "0.2.0"
 ---
 
 # LastPing setup
@@ -129,10 +129,10 @@ added to the command as the instructions show. Show the diff for each file and e
 only after the user agrees. Tell the user which changes still need to be merged or
 deployed before the job reports.
 
-## Step 6: Monitor this agent (Claude Code and Codex only)
+## Step 6: Monitor this agent (Claude Code, Codex and Antigravity CLI)
 
-In any other client, skip this step: the hook install exists for Claude Code and
-Codex only. Otherwise offer: "I can also report my own runs to LastPing, so you
+In any other client, skip this step: the hook install exists for Claude Code, Codex and
+Antigravity CLI only. Otherwise offer: "I can also report my own runs to LastPing, so you
 hear when a run fails, hangs or waits on you. Set that up?" If yes:
 
 1. `register_agent` with a name the user agrees to, for example "<project> Claude Code".
@@ -143,8 +143,9 @@ hear when a run fails, hangs or waits on you. Set that up?" If yes:
    (`expect_every_s`, in seconds), so a run that never starts opens an incident. If
    it only runs when someone uses it, do not set one: it would alert every time they
    stop working. Say which you chose.
-4. `get_ping_instructions` with that monitor's id and `tool` `claude-code` or `codex`.
-   Carry out its `hook_install` exactly as it says.
+4. `get_ping_instructions` with that monitor's id and `tool` `claude-code`, `codex` or `antigravity`.
+   Carry out its `hook_install` exactly as it says. Antigravity CLI has no hook for
+   waiting on a person, so its runs are never marked blocked.
 5. Offer tracing (spans, tokens, cost): `get_trace_setup` with `monitor_id` and the
    same `tool`, and follow its `prompt`. The user creates and stores the tracing key
    themselves; you never see it.
