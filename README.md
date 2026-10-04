@@ -21,7 +21,7 @@ Then ask your coding agent: **Monitor this project with LastPing**
   Kubernetes CronJobs, systemd timers), shows you the list, and creates monitors only
   after you agree.
 - Adds the pings to each job, showing you every change first.
-- Optionally reports Claude Code or Codex's own runs, with traces.
+- Optionally reports Claude Code, Codex or Antigravity CLI's own runs, with traces.
 
 What it never does: ask for or handle your API key, tracing key or webhook URLs;
 change a file without showing you; delete, pause or edit existing monitors.
