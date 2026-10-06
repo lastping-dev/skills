@@ -21,6 +21,8 @@ jobs:
         env:
           LEAK_PATTERN_EXTRA: ${{ secrets.LEAK_PATTERN_EXTRA }}
         run: bash scripts/check.sh
+      - name: Plugin manifest (claude plugin validate)
+        run: npx -y @anthropic-ai/claude-code@2.1.292 plugin validate --strict .
       - name: The skills CLI discovers lastping-setup
         run: |
           npx -y skills@1.7.0 add . --list 2>&1 | tee list.txt
