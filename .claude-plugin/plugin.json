@@ -1,7 +1,7 @@
 {
   "name": "lastping",
   "displayName": "LastPing",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Know when a cron job, CI/CD pipeline or AI agent fails, hangs or goes quiet. Connects LastPing's MCP server and adds a setup skill that finds your project's scheduled jobs and creates a monitor for each once you agree.",
   "author": {
     "name": "LastPing",
@@ -21,5 +21,8 @@
     "mcp"
   ],
   "icon": "./assets/icon.png",
-  "privacyPolicyUrl": "https://lastping.dev/privacy/"
+  "privacyPolicyUrl": "https://lastping.dev/privacy/",
+  "documentationUrl": "https://lastping.dev/mcp/",
+  "supportUrl": "https://lastping.dev/about",
+  "termsOfServiceUrl": "https://lastping.dev/terms/"
 }
