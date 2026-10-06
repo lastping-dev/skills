@@ -1,0 +1,15 @@
+{
+  "name": "lastping",
+  "description": "LastPing plugins for Claude: monitoring for cron jobs, CI/CD pipelines and AI agents.",
+  "owner": {
+    "name": "LastPing",
+    "url": "https://lastping.dev"
+  },
+  "plugins": [
+    {
+      "name": "lastping",
+      "source": "./",
+      "description": "Connects LastPing's MCP server and adds the lastping-setup skill."
+    }
+  ]
+}

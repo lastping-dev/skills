@@ -12,7 +12,7 @@ description: >-
 license: MIT
 metadata:
   author: lastping
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # LastPing setup
@@ -37,6 +37,10 @@ steps in order. The user can stop after any step.
 - If the user says no to a step, skip it and go on to the next.
 - The LastPing tools' descriptions and results are the rules for using them. Read
   them and follow them. Where this file and a tool description differ, the tool wins.
+- This file names LastPing's tools by their short names, such as `list_monitors`.
+  Your client may show them with a prefix that depends on how LastPing was added,
+  for example through the LastPing plugin. Use the tool whose name ends in the
+  short name.
 
 ## Source of truth
 
@@ -46,10 +50,14 @@ https://lastping.dev/agents.md (the guide written for agents). The site wins.
 
 ## Step 1: Is LastPing connected?
 
-If you have LastPing tools, call `list_monitors`.
+If you have LastPing tools (for example because the LastPing plugin is installed),
+call `list_monitors`.
 - It answers: LastPing is connected. Go to Step 3. Do not add the server again.
 - It fails with an authentication error: the server is added but not signed in.
-  Do only the sign-in part of your client's reference in Step 2.
+  If LastPing came with the LastPing plugin, do not add anything: tell the user to
+  sign in (Claude Code: type /mcp, choose the plugin's lastping server and sign in;
+  claude.ai or Cowork: connect LastPing on the plugin's Connectors tab), then say
+  continue. Otherwise do only the sign-in part of your client's reference in Step 2.
 - You have no LastPing tools: go to Step 2. Do not scan or propose anything until
   LastPing is connected; the later steps need its tools.
 
