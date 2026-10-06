@@ -1,0 +1,153 @@
+{
+  "tools": [
+    {
+      "name": "list_monitors",
+      "description": "Requires the read scope or higher. Lists every monitor in the project with id, name, slug, status and ping_url. tag narrows the list to monitors carrying one tag.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Optional tag to filter by, e.g. 'agent:claude'. Only monitors with this tag are returned."
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "discover_monitors_reconcile",
+      "description": "Requires the write scope or higher. Turns a scan of a repository or host (`sources`, every scheduled job found) into monitors. Creates one monitor per source not already monitored; never deletes, pauses or edits existing monitors, so a scheduled re-run is safe drift detection. Returns `created`, `existing` (unmodified, hand-tuned values intact) and `orphaned` (source not in this scan; still running and alerting). Each created monitor can page a person; this endpoint has no delete path. source_kind plus source_ref is the diff key, so source_ref has to stay stable: a changed ref creates a duplicate; a crontab ref names the file and the command, so each line is its own source. Kinds: 'crontab' (crontab -l, /etc/cron.d/*, /etc/crontab), 'github-actions' (on.schedule.cron), 'k8s-cronjob' (spec.schedule), 'systemd-timer' (OnCalendar=). A source without schedule_cron becomes on-demand. crontab and systemd-timer fire in the host's local time (`timedatectl show -p Timezone --value` or `readlink /etc/localtime` prints it); github-actions and k8s-cronjob in UTC. A stated tz is stored as given: the API cannot tell a guessed 'UTC' from one read from the host. list_monitors shows each source.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sources": {
+            "type": "string",
+            "description": "The full scan as a JSON array string, e.g. '[{\"source_kind\":\"crontab\",\"source_ref\":\"/etc/cron.d/backup:/usr/local/bin/backup.sh\",\"schedule_cron\":\"0 3 * * *\",\"tz\":\"Europe/Berlin\"}]'. Fields: source_kind, source_ref (required), name (default source_ref), schedule_cron (5-field, when one was read), tz (IANA zone the cron fires in; required on a crontab or systemd-timer entry with schedule_cron), suggested_expect_every_s (overrides the silence floor). An omitted source is reported orphaned; '[]' orphans every discovered monitor, deleting none. At most 1000 entries; a repeated source_kind/source_ref pair is rejected. The 100-monitor cap covers the whole batch; one invalid entry rejects it all."
+          }
+        },
+        "required": [
+          "sources"
+        ]
+      }
+    },
+    {
+      "name": "create_monitor",
+      "description": "Requires the write scope or higher. Creates a monitor, or updates the existing one when slug matches (an upsert; the result says 'updated'). Heartbeat and ci monitors take schedule_kind: 'simple' with period_s, 'cron' with cron_expr, or 'on_demand' with neither.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable monitor name, e.g. 'Daily backup job'."
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "Attaches the monitor to a registered agent, by the agent's id or slug (register_agent returns both)."
+          },
+          "schedule_kind": {
+            "type": "string",
+            "description": "'simple' (with period_s), 'cron' (with cron_expr) or 'on_demand' (neither). 'on_demand' fits irregular invocation."
+          },
+          "cron_expr": {
+            "type": "string",
+            "description": "5-field cron expression, e.g. '0 3 * * *'. Required when schedule_kind='cron'."
+          },
+          "period_s": {
+            "type": "number",
+            "description": "Ping interval in seconds. Required when schedule_kind='simple'."
+          },
+          "tz": {
+            "type": "string",
+            "description": "IANA timezone for cron evaluation. Defaults to UTC."
+          },
+          "expect_every_s": {
+            "type": "number",
+            "description": "Silence floor in seconds: a 'silence' incident opens when no ping of any kind arrives within this window. Unset (default): no floor. Range 60-31536000."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "update_monitor",
+      "description": "Requires the write scope or higher. Updates a monitor by UUID with merge-patch semantics: supplied fields change, omitted fields keep their stored value.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Monitor UUID."
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable monitor name."
+          },
+          "expect_every_s": {
+            "type": "number",
+            "description": "Silence floor in seconds. Omitted: unchanged; 0 clears it and turns the silence floor off."
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "register_agent",
+      "description": "Requires the write scope or higher. Registers an autonomous agent in the project's agent registry and returns its id, slug and wire-up steps. One agent stands for one autonomous worker, which can own many monitors: create_monitor and update_monitor attach a monitor through agent_id (the id or the slug).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable agent name, e.g. 'Deploy Bot'. Used to derive the agent's slug."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional free-text description of what this agent does. Omitted: none."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    {
+      "name": "get_ping_instructions",
+      "description": "Requires the read scope or higher. Returns what a monitor needs in order to report: its ping URLs, copy-paste snippets (curl_success, curl_start, curl_fail, curl_step, run_example) and three reporting mechanisms, for wiring up a new monitor. `reporting_options` holds the rule for choosing between them: `how_to` is the manual protocol and works in any agent with no prerequisite (with expect_every_s, a lapse opens an incident); `hook_install` is a one-time install that automates the same protocol through hooks and alone sends every state, blocked and note included; it is returned only when `tool` is set (claude-code, codex or antigravity), otherwise `hook_install_note` says so; `run_wrapper` puts `lastping run` before a launched command (cron job, CI step, script) and reports start, success, fail and cancel.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Monitor UUID (from create_monitor or list_monitors)."
+          },
+          "tool": {
+            "type": "string",
+            "enum": [
+              "claude-code",
+              "codex",
+              "antigravity"
+            ],
+            "description": "Which tool's install `hook_install` carries: claude-code, codex or antigravity. `hook_install` is returned only when this is set. Everything else in the result is the same."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+    {
+      "name": "list_destinations",
+      "description": "Requires the read scope or higher. Lists the project's notification destinations (channels) of every kind (webhook, telegram, discord, slack, ntfy, pushover, msteams, googlechat, email). Their ids are what set_route takes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ]
+}

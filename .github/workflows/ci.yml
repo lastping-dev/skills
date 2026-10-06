@@ -18,6 +18,8 @@ jobs:
         with:
           node-version: 20
       - name: Skill format and leak grep
+        env:
+          LEAK_PATTERN_EXTRA: ${{ secrets.LEAK_PATTERN_EXTRA }}
         run: bash scripts/check.sh
       - name: The skills CLI discovers lastping-setup
         run: |

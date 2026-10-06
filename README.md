@@ -88,6 +88,15 @@ How LastPing handles your data: https://lastping.dev/privacy/
 What it never does: ask for or handle your API key, tracing key or webhook URLs;
 change a file without showing you; delete, pause or edit existing monitors.
 
+## Evals
+
+`evals/` holds a small suite for `claude plugin eval`: finding a project's scheduled
+jobs, monitoring Claude Code's own runs, and staying out of an unrelated request. The
+LastPing tools are answered by stand-ins in `evals/mocks/`, so a run needs no account
+and never reaches mcp.lastping.dev. Run it from the repository root with
+`claude plugin eval . --scaffold --no-publish` (the first case writes a sample
+crontab and workflow into the run's empty workspace).
+
 ## Licence
 
 MIT. Free for individuals. Support and documentation: https://lastping.dev

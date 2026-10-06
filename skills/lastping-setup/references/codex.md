@@ -2,8 +2,9 @@
 
 1. Ask: "May I add LastPing to your Codex MCP configuration?" Wait for a yes.
 2. Run `codex mcp get lastping | grep enabled`. If it shows `enabled: true`, go back to Step 1 of
-   the skill. If it is listed and was added with a key, ask the user to delete its
-   block from `~/.codex/config.toml` themselves. Do not open that file: it can hold keys.
+   the skill. If Step 1 then still finds no working LastPing tools, ask the user to
+   delete the lastping block from `~/.codex/config.toml` themselves and come back
+   here. Do not open that file: it can hold keys.
 3. Run: `codex mcp add lastping --url https://mcp.lastping.dev/mcp`
    Codex opens the browser to sign in to LastPing. If no browser opened, run
    `codex mcp login lastping`. If your sandbox blocks the command, give the user

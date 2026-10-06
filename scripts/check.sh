@@ -65,9 +65,17 @@ junk="$(cd "$ROOT" && git ls-files -co --exclude-standard | grep -E '(^|/)(\.DS_
 if [ -z "$junk" ]; then ok "no system files"; else fail "system files found:"; echo "$junk"; fi
 
 echo "=== leak grep ==="
-# Words that would reveal private repositories or tooling. This file is
-# excluded: it has to spell them.
-pattern='monorepo|\bpulse\b|superpowers|docs/superpowers|/Users/|tedomac|tp322d/lastping($|[^-])|(^|[^&a-zA-Z0-9])#[0-9]{2,}\b'
+# Generic patterns only: absolute home directories and issue-number references.
+# Further private terms come from LEAK_PATTERN_EXTRA (an extended regular
+# expression; CI passes it from a repository secret), so this public file never
+# spells them. This file is excluded from the grep: it has to spell its own patterns.
+pattern='/Users/|/home/|(^|[^&a-zA-Z0-9])#[0-9]{2,}\b'
+if [ -n "${LEAK_PATTERN_EXTRA:-}" ]; then
+  pattern="$pattern|$LEAK_PATTERN_EXTRA"
+  ok "extra leak patterns loaded from LEAK_PATTERN_EXTRA"
+else
+  echo "  [NOTE] LEAK_PATTERN_EXTRA is not set: generic patterns only"
+fi
 hits="$(cd "$ROOT" && git ls-files -co --exclude-standard | grep -v '^scripts/check.sh$' | xargs grep -nIiE "$pattern" 2>/dev/null || true)"
 if [ -z "$hits" ]; then ok "no private references in tracked files"; else fail "private references found:"; echo "$hits"; fi
 
