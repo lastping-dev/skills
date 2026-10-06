@@ -1,5 +1,8 @@
 # Connect Claude Code
 
+If you already have LastPing tools, for example from the LastPing plugin, skip this
+file: LastPing is added. Go back to Step 1 of the skill.
+
 1. Ask: "May I add LastPing to your Claude Code MCP configuration (user scope)?"
    Wait for a yes.
 2. Run `claude mcp get lastping | grep Status`. Never run `mcp get` without a filter:

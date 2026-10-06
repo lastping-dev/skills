@@ -45,6 +45,25 @@ for md in "$ROOT"/skills/*/SKILL.md; do
 done
 [ "$found" = 1 ] && ok "at least one skill found" || fail "no skills/*/SKILL.md found"
 
+echo "=== plugin ==="
+for f in .claude-plugin/plugin.json .claude-plugin/marketplace.json .mcp.json; do
+  if [ ! -f "$ROOT/$f" ]; then fail "$f is missing"; continue; fi
+  if node -e 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"))' "$ROOT/$f" 2>/dev/null; then
+    ok "$f is valid JSON"
+  else
+    fail "$f is not valid JSON"
+  fi
+done
+pver="$(node -p 'require(process.argv[1]).version' "$ROOT/.claude-plugin/plugin.json" 2>/dev/null)"
+for md in "$ROOT"/skills/*/SKILL.md; do
+  [ -f "$md" ] || continue
+  sdir="$(basename "$(dirname "$md")")"
+  sver="$(sed -n 's/^[[:space:]]*version:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' "$md" | head -n 1)"
+  if [ "$sver" = "$pver" ]; then ok "$sdir: version $sver matches plugin.json"; else fail "$sdir: version '$sver' differs from plugin.json '$pver'"; fi
+done
+junk="$(cd "$ROOT" && git ls-files -co --exclude-standard | grep -E '(^|/)(\.DS_Store|Thumbs\.db|desktop\.ini|__MACOSX)(/|$)' || true)"
+if [ -z "$junk" ]; then ok "no system files"; else fail "system files found:"; echo "$junk"; fi
+
 echo "=== leak grep ==="
 # Words that would reveal private repositories or tooling. This file is
 # excluded: it has to spell them.
