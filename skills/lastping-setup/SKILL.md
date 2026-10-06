@@ -12,7 +12,7 @@ description: >-
 license: MIT
 metadata:
   author: lastping
-  version: "0.3.1"
+  version: "0.3.2"
 ---
 
 # LastPing setup
@@ -30,10 +30,10 @@ steps in order. The user can stop after any step.
   the change first.
 - Create monitors only after the user says yes to the list you showed them. Never
   delete, pause or edit existing monitors from this skill.
-- Never run a command that prints every MCP server's entry, even if you filter its
-  output afterwards: listings can print other servers' keys. Ask about lastping by
-  name only, and run `mcp get` only through a filter such as `| grep Status`,
-  because it prints the server's headers.
+- Never read MCP configuration, credential stores or dotfiles to find out whether
+  LastPing works. The only check is whether the LastPing tools are available and
+  `list_monitors` answers. If a step fails, follow its sign-in instructions; do not
+  inspect configuration to find out why.
 - If the user says no to a step, skip it and go on to the next.
 - The LastPing tools' descriptions and results are the rules for using them. Read
   them and follow them. Where this file and a tool description differ, the tool wins.

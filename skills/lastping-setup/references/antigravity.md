@@ -6,4 +6,5 @@
 3. Tell the user: "In Antigravity CLI type /mcp, choose lastping, choose Authenticate and sign in to LastPing in the browser that opens. If the LastPing tools do not appear, restart with agy -c to continue this conversation. Then say continue."
 4. After continue: `list_monitors` answers.
 
-Never open ~/.gemini/config/mcp_config.json yourself: it can hold other servers' keys.
+If something fails, go back to the sign-in step. Do not look into Antigravity's own
+configuration to find out why.
