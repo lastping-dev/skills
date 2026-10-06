@@ -36,13 +36,10 @@ at the same server, so you keep one set of LastPing tools and one sign-in.
 
 ### As a skill in any coding agent
 
-```
-npx skills add lastping-dev/skills
-```
-
-This installs the lastping-setup skill only. The skill connects LastPing with you in
-Claude Code, Codex, Antigravity CLI and VS Code, and walks any other assistant
-through https://lastping.dev/mcp/. You sign in once, in your browser.
+To use only the lastping-setup skill in Codex, Cursor, VS Code or another agent, see
+[INSTALL-other-agents.md](INSTALL-other-agents.md). The skill connects LastPing with
+you in Claude Code, Codex, Antigravity CLI and VS Code, and walks any other
+assistant through https://lastping.dev/mcp/. You sign in once, in your browser.
 
 ## Use it
 
