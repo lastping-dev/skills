@@ -4,10 +4,10 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-PASS=0
-FAIL=0
-ok()   { echo "  [PASS] $1"; PASS=$((PASS + 1)); }
-fail() { echo "  [FAIL] $1"; FAIL=$((FAIL + 1)); }
+n_ok=0
+n_failed=0
+ok()   { echo "  [PASS] $1"; n_ok=$((n_ok + 1)); }
+fail() { echo "  [FAIL] $1"; n_failed=$((n_failed + 1)); }
 
 echo "=== skills ==="
 found=0
@@ -45,22 +45,8 @@ for md in "$ROOT"/skills/*/SKILL.md; do
 done
 [ "$found" = 1 ] && ok "at least one skill found" || fail "no skills/*/SKILL.md found"
 
-echo "=== plugin ==="
-for f in .claude-plugin/plugin.json .claude-plugin/marketplace.json .mcp.json; do
-  if [ ! -f "$ROOT/$f" ]; then fail "$f is missing"; continue; fi
-  if node -e 'JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"))' "$ROOT/$f" 2>/dev/null; then
-    ok "$f is valid JSON"
-  else
-    fail "$f is not valid JSON"
-  fi
-done
-pver="$(node -p 'require(process.argv[1]).version' "$ROOT/.claude-plugin/plugin.json" 2>/dev/null)"
-for md in "$ROOT"/skills/*/SKILL.md; do
-  [ -f "$md" ] || continue
-  sdir="$(basename "$(dirname "$md")")"
-  sver="$(sed -n 's/^[[:space:]]*version:[[:space:]]*"\{0,1\}\([^"]*\)"\{0,1\}[[:space:]]*$/\1/p' "$md" | head -n 1)"
-  if [ "$sver" = "$pver" ]; then ok "$sdir: version $sver matches plugin.json"; else fail "$sdir: version '$sver' differs from plugin.json '$pver'"; fi
-done
+echo "=== repository files ==="
+# The plugin manifests are checked in CI by `claude plugin validate --strict`.
 junk="$(cd "$ROOT" && git ls-files -co --exclude-standard | grep -E '(^|/)(\.DS_Store|Thumbs\.db|desktop\.ini|__MACOSX)(/|$)' || true)"
 if [ -z "$junk" ]; then ok "no system files"; else fail "system files found:"; echo "$junk"; fi
 
@@ -93,5 +79,5 @@ if git -C "$ROOT" rev-parse --verify -q HEAD >/dev/null; then
 fi
 
 echo ""
-echo "$PASS passed, $FAIL failed"
-[ "$FAIL" -eq 0 ]
+echo "$n_ok passed, $n_failed failed"
+[ "$n_failed" -eq 0 ]
