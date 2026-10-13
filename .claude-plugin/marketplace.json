@@ -1,6 +1,6 @@
 {
   "name": "lastping",
-  "description": "LastPing plugins for Claude: monitoring for cron jobs, CI/CD pipelines and AI agents.",
+  "description": "LastPing for Claude: AI agent monitoring that alerts when your agents fail, stall or need you, plus cron and CI/CD.",
   "owner": {
     "name": "LastPing",
     "url": "https://lastping.dev"

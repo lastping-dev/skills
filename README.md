@@ -1,8 +1,8 @@
 # LastPing for Claude
 
-[LastPing](https://lastping.dev) is the dead man's switch for cron jobs, CI/CD
-pipelines and AI agents: it tells you when a scheduled job, a pipeline or an agent
-fails, hangs or goes quiet. This repository is both a Claude plugin and a set of
+[LastPing](https://lastping.dev) alerts you when your AI agents fail, stall,
+wait for your approval or never start, and watches the cron jobs and CI/CD
+pipelines around them. This repository is both a Claude plugin and a set of
 agent skills.
 
 The plugin gives Claude two things:
