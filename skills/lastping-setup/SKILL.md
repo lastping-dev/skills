@@ -1,6 +1,7 @@
 ---
 name: lastping-setup
 description: >-
+  AI agent monitoring: alerts when your agents fail, stall or need you.
   Set up LastPing monitoring for a project from your coding agent: connect the
   LastPing MCP server, find the project's scheduled jobs (crontab, GitHub Actions
   schedules, Kubernetes CronJobs, systemd timers), create a monitor for each once
@@ -12,7 +13,7 @@ description: >-
 license: MIT
 metadata:
   author: lastping
-  version: "0.3.4"
+  version: "0.3.5"
 ---
 
 # LastPing setup
